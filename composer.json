@@ -1,0 +1,56 @@
+{
+    "name": "sportic/omniresult-wiclax",
+    "description": "a scraper for getting data from wiclax website",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gabriel Solomon",
+            "email": "hello@gabrielsolomon.ro"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/gabrielsolomon/php-phantomjs"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "sportic/omniresult-common": "^1.0",
+        "bytic/utility": "^1.0"
+    },
+    "require-dev": {
+        "bytic/phpqatools": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sportic\\Omniresult\\Wiclax\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sportic\\Omniresult\\Wiclax\\Tests\\": "tests/src",
+            "Sportic\\Omniresult\\Wiclax\\Tests\\Fixtures\\": "tests/fixtures"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "ByTIC\\GouttePhantomJs\\Composer\\PhantomInstaller::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "ByTIC\\GouttePhantomJs\\Composer\\PhantomInstaller::installPhantomJS"
+        ]
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true,
+            "phpstan/extension-installer": true,
+            "bytic/phpqatools": true
+        }
+    }
+}
