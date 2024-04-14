@@ -18,16 +18,14 @@ class EventPage extends AbstractScraper
      */
     protected function doCallValidation()
     {
-        $this->validate('eventId');
+        $this->validate('event');
     }
 
     /**
      * @return string
      */
-    public function getCrawlerUri()
+    public function getCrawlerUri(): string
     {
-        return $this->getCrawlerUriHost()
-            . '/FinishLine.Application/sportevents/getsportevent?id='
-            . $this->getEventId();
+        return $this->getParameter('event');
     }
 }

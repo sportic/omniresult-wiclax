@@ -15,20 +15,25 @@ class SourceDetectorTest extends TestCase
      * @dataProvider data_detect
      * @return void
      */
-    public function test_detect($url, $isValid)
+    public function test_detect($url, $isValid, $params)
     {
         $crawler = $crawler ?? AbstractSourceDetector::generateCrawler($url);
         $result = SourceDetector::detect($crawler);
 
         self::assertInstanceOf(DetectorResult::class, $result);
-        self::assertEquals($result->isValid(), $isValid);
+        self::assertEquals($isValid, $result->isValid());
+        self::assertEquals($params, $result->getParams());
     }
 
     public function data_detect(): array
     {
         return [
-            ['https://www.example.com', false],
-            ['https://liniadesosire.ro/rezultate/crosul-osut-2024/', true],
+            ['https://www.example.com', false, []],
+            [
+                'https://liniadesosire.ro/rezultate/crosul-osut-2024/',
+                true,
+                ['src' => 'https://liniadesosire.ro/wp-content/glive-results/crosul-osut-2024/Crosul OSUT 2024.clax']
+            ],
         ];
     }
 }

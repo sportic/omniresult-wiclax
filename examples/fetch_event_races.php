@@ -3,10 +3,10 @@
 require '../vendor/autoload.php';
 
 $parameters = [
-    'eventId' => '77'
+    'event' => 'https://liniadesosire.ro/wp-content/glive-results/timisoara-sportguru-21k-2024/Timisoara%20Sportguru%2021K.clax'
 ];
 
-$client = new \Sportic\Omniresult\LiniaDeSosire\LiniaDeSosireClient();
+$client = new \Sportic\Omniresult\Wiclax\WiclaxClient();
 $resultsParser = $client->event($parameters);
 $resultsData = $resultsParser->getContent();
 $races = $resultsData->getRecords();

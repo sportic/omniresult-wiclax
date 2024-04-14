@@ -2,8 +2,7 @@
 
 namespace Sportic\Omniresult\Wiclax\Scrapers;
 
-use ByTIC\GouttePhantomJs\Clients\ClientFactory;
-use Goutte\Client;
+use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpClient\HttpClient;
 
 /**
@@ -39,26 +38,11 @@ abstract class AbstractScraper extends \Sportic\Omniresult\Common\Scrapers\Abstr
         ];
     }
 
-    /** @noinspection PhpMissingParentCallCommonInspection
-     * @return Client
-     */
-    protected function generateClient()
-    {
-        return ClientFactory::getGoutteClient(
-            HttpClient::create(['verify_peer' => false, 'verify_host' => false])
-        );
-    }
+
 
     /**
      * @return string
      */
-    abstract public function getCrawlerUri();/** @noinspection PhpMethodNamingConventionInspection */
+    abstract public function getCrawlerUri(): string;/** @noinspection PhpMethodNamingConventionInspection */
 
-    /**
-     * @return string
-     */
-    protected function getCrawlerUriHost()
-    {
-        return 'https://app.Wiclax.ro:8443';
-    }
 }

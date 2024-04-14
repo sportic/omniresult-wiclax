@@ -8,17 +8,12 @@
             "email": "hello@gabrielsolomon.ro"
         }
     ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/gabrielsolomon/php-phantomjs"
-        }
-    ],
     "require": {
         "php": "^8.0",
         "ext-dom": "*",
-        "ext-json": "*",
+        "ext-simplexml": "*",
         "sportic/omniresult-common": "^1.0",
+
         "bytic/utility": "^1.0"
     },
     "require-dev": {
@@ -34,14 +29,6 @@
             "Sportic\\Omniresult\\Wiclax\\Tests\\": "tests/src",
             "Sportic\\Omniresult\\Wiclax\\Tests\\Fixtures\\": "tests/fixtures"
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "ByTIC\\GouttePhantomJs\\Composer\\PhantomInstaller::installPhantomJS"
-        ],
-        "post-update-cmd": [
-            "ByTIC\\GouttePhantomJs\\Composer\\PhantomInstaller::installPhantomJS"
-        ]
     },
     "prefer-stable": true,
     "minimum-stability": "dev",

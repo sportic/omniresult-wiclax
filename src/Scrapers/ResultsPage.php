@@ -15,64 +15,29 @@ use Sportic\Omniresult\Wiclax\Parsers\EventPage as Parser;
 class ResultsPage extends AbstractScraper
 {
     /**
-     * @return mixed
+     * @throws \Sportic\Omniresult\Common\Exception\InvalidRequestException
      */
-    public function getEventId()
+    protected function doCallValidation()
     {
-        return $this->getParameter('eventId');
+        $this->validate('event','race');
     }
 
     /**
      * @return mixed
      */
-    public function getRaceId()
+    public function getEvent()
     {
-        return $this->getParameter('raceId');
-    }
-
-    /**
-     * @return RaceCategory[]
-     */
-    public function getRaceCategories()
-    {
-        if (!$this->hasParameter('raceCategories')) {
-            /** @var ListContent $eventReturn */
-            $eventReturn = $this->getParameter('raceClient')->event(['eventId' => $this->getEventId()])->getContent();
-            $races = $eventReturn->getRecords();
-            $race = $races[$this->getRaceId()];
-            $this->setParameter('raceCategories', $race->getParameter('categories'));
-        }
-        return $this->getParameter('raceCategories', []);
-    }
-
-    /**
-     * @return int
-     */
-    public function getPage()
-    {
-        return $this->getParameter('page', 1);
-    }
-
-    /**
-     * @param $page
-     */
-    public function setPage($page)
-    {
-        $page =  !empty($page) ? $page : 1;
-        $this->setParameter('page', $page);
+        return $this->getParameter('event');
     }
 
     /**
      * @return mixed
      */
-    public function getRaceCategoryId()
+    public function getRace()
     {
-        $selected = array_slice($this->getRaceCategories(), $this->getPage() -1 , 1);
-        if (!count($selected)) {
-            return 0;
-        }
-        return reset($selected)->getId();
+        return $this->getParameter('race');
     }
+
 
     /**
      * @inheritdoc
@@ -81,18 +46,15 @@ class ResultsPage extends AbstractScraper
     {
         $data = parent::generateParserData();
 
-        $data['page'] = $this->getPage();
-        $data['raceCategories'] = $this->getRaceCategories();
+        $data['race'] = $this->getRace();
         return $data;
     }
 
         /**
      * @return string
      */
-    public function getCrawlerUri()
+    public function getCrawlerUri(): string
     {
-        return $this->getCrawlerUriHost()
-            . '/FinishLine.Application/races/results?page=0&pageSize=9000&searchCriteria='
-            . '&raceID=' . $this->getRaceCategoryId();
+        return $this->getEvent();
     }
 }

@@ -2,9 +2,11 @@
 
 namespace Sportic\Omniresult\Wiclax\Tests\Parsers;
 
-use Sportic\Omniresult\Common\Models\Result;
+use Sportic\Omniresult\Common\Content\ListContent;
+use Sportic\Omniresult\Common\Models\RaceCategory;
 use Sportic\Omniresult\Wiclax\Parsers\ResultsPage as PageParser;
 use Sportic\Omniresult\Wiclax\Scrapers\ResultsPage as PageScraper;
+use Sportic\Omniresult\Wiclax\Tests\Fixtures\Results\ResultsFiles;
 
 /**
  * Class EventPageTest
@@ -12,33 +14,47 @@ use Sportic\Omniresult\Wiclax\Scrapers\ResultsPage as PageScraper;
  */
 class ResultsPageTest extends AbstractPageTest
 {
-    public function testGenerate()
+    public function test_get_categories_none()
     {
+        $scraper = new PageScraper();
+        $scraper->initialize(['event' => '77', 'race' => '184']);
+
+        /** @var ListContent $parametersParsed */
         $parametersParsed = static::initParserFromFixturesJson(
             new PageParser(),
-            (new PageScraper()),
-            'ResultsPage/default'
+            $scraper,
+            ResultsFiles::noCategories()
         );
-
-        /** @var Result $record */
-        $records = $parametersParsed->getRecords();
-        self::assertCount(48, $records);
-
-        $record = $records[10];
-
-        self::assertInstanceOf(Result::class, $record);
-        self::assertEquals('Pentek', $record->getFirstName());
-        self::assertEquals('Raul', $record->getLastName());
-
-        self::assertEquals('5911.884', $record->getTime());
-
-        self::assertEquals('39', $record->getPosGender());
-        self::assertEquals(null, $record->getStatus());
-
-
-        $record = $records[47];
-        self::assertEquals('DNF', $record->getStatus());
+        self::assertSame([], $parametersParsed->get('categories'));
     }
+
+    public function test_get_categories()
+    {
+        $scraper = new PageScraper();
+        $scraper->initialize(['event' => '77', 'race' => 'Cros 10km']);
+
+        /** @var ListContent $parametersParsed */
+        $parametersParsed = static::initParserFromFixturesJson(
+            new PageParser(),
+            $scraper,
+            ResultsFiles::multipleCategories()
+        );
+        $categories = $parametersParsed->get('categories');
+        self::assertIsArray($categories);
+        self::assertCount(6, $categories);
+
+        /** @var RaceCategory $category */
+        $category = reset($categories);
+        self::assertInstanceOf(RaceCategory::class, $category);
+        self::assertSame('1417', $category->getId());
+        self::assertSame('14-17 ani', $category->getName());
+
+        $category = end($categories);
+        self::assertInstanceOf(RaceCategory::class, $category);
+        self::assertSame('+60 ani', $category->getName());
+        self::assertSame('60+', $category->getId());
+    }
+
 
     /**
      * @inheritdoc

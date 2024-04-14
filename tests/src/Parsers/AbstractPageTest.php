@@ -44,14 +44,7 @@ abstract class AbstractPageTest extends AbstractTest
         $parser->setScraper($scrapper);
         $parser->setCrawler($crawler);
 
-        $parametersParsed = $parser->getContent();
-
-//        file_put_contents(
-//            TEST_FIXTURE_PATH . DS . 'Parsers' . DS . $fixturePath . '.serialized',
-//            serialize($parser->getContent()->all())
-//        );
-
-        return $parametersParsed;
+        return $parser->getContent();
     }
 
 
@@ -63,16 +56,17 @@ abstract class AbstractPageTest extends AbstractTest
      */
     public static function initParserFromFixturesJson($parser, $scrapper, $fixturePath)
     {
-        $response = new Response(
-            file_get_contents(
-                TEST_FIXTURE_PATH . DS . 'Parsers' . DS . $fixturePath . '.json'
-            )
-        );
+        $fixturePath = is_file($fixturePath)
+            ? $fixturePath
+            : TEST_FIXTURE_PATH . DS . 'Parsers' . DS . $fixturePath;
+
+        $response = new Response(file_get_contents($fixturePath));
         $parser->setScraper($scrapper);
         $parser->initialize(['response' => $response]);
 
         return $parser->getContent();
     }
+
     /**
      * @param $fixturePath
      * @return mixed

@@ -2,11 +2,13 @@
 
 namespace Sportic\Omniresult\Wiclax\Parsers;
 
+use SimpleXMLElement;
 use Sportic\Omniresult\Common\Content\ListContent;
+use Sportic\Omniresult\Common\Models\Athlete;
 use Sportic\Omniresult\Common\Models\RaceCategory;
 use Sportic\Omniresult\Common\Models\Result;
 use Sportic\Omniresult\Wiclax\Helper;
-use Sportic\Omniresult\Wiclax\Parsers\Traits\HasJsonConfigTrait;
+use Sportic\Omniresult\Wiclax\Parsers\Traits\HasXmlTrait;
 use Sportic\Omniresult\Wiclax\Scrapers\ResultsPage as Scraper;
 
 /**
@@ -17,88 +19,112 @@ use Sportic\Omniresult\Wiclax\Scrapers\ResultsPage as Scraper;
  */
 class ResultsPage extends AbstractParser
 {
-    use HasJsonConfigTrait;
+    use HasXmlTrait;
 
-    protected $header = null;
+    protected ?array $categories = null;
+
+    protected ?array $athletes = null;
 
     /**
      * @return array
      */
-    protected function generateContent()
+    protected function generateContent(): array
     {
-        $configArray = $this->getConfigArray();
-        $categories = $this->getParameter('raceCategories', []);
-        $results = $this->parseResults($configArray, $categories);
+        $results = $this->getResults();
 
         return [
             'pagination' => [
                 'current' => $this->getParameter('page', 1),
-                'all' => count($categories)
+                'all' => count($results)
             ],
             'records' => $results
         ];
     }
 
-    /**
-     * @param $resultsArray
-     * @param $categories
-     * @return array
-     */
-    protected function parseResults($resultsArray, $categories)
+    protected function getAthlete(string $id)
     {
-        $return = [];
-        foreach ($resultsArray as $resultArray) {
-            $return[] = $this->parseResult($resultArray, $categories);
+        $athletes = $this->checkAtheletes();
+        return $athletes[$id] ?? null;
+    }
+
+    protected function checkAtheletes()
+    {
+        if ($this->athletes === null) {
+            $configArray = $this->getXmlObject();
+            $athletesXml = $configArray->xpath('//Etapes/Etape/Engages/E');
+            $athletes = $this->parseAthletes($athletesXml);
+            $this->athletes = $athletes;
         }
-        return $return;
+        return $this->athletes;
+    }
+
+    protected function parseAthletes($athletesXml): array
+    {
+        $athletes = [];
+        foreach ($athletesXml as $athleteXml) {
+            $raceName = (string)$athleteXml['p'];
+            if ($raceName == $this->getParameter('race')) {
+                $athlete = $this->parseAthlete($athleteXml);
+                $athletes[$athlete->getId()] = $athlete;
+            }
+        }
+        return $athletes;
+    }
+
+
+    protected function parseAthlete(SimpleXMLElement $athleteXml): Athlete
+    {
+        $athlete = new Athlete();
+        $bib = (string)$athleteXml['d'];
+        $athlete->setId($bib);
+        $athlete->setFullNameLF((string)$athleteXml['n']);
+        $athlete->setYob((string)$athleteXml['a']);
+        $athlete->setGender($this->parseAthleteGender((string)$athleteXml['x']));
+        $athlete->setCountry((string)$athleteXml['na']);
+
+        $category = $this->getCategory((string)$athleteXml['ca']);
+        $athlete->setCategory($category);
+        return $athlete;
+    }
+
+    protected function getResults(): array
+    {
+        $configArray = $this->getXmlObject();
+        $resultsXml = $configArray->xpath('//Etapes/Etape/Resultats/R');
+        return $this->parseResults($resultsXml);
+    }
+
+    protected function parseResults($resultsXml)
+    {
+        $results = [];
+        foreach ($resultsXml as $resultXml) {
+            $result = $this->parseResult($resultXml);
+            $results[$result->getId()] = $result;
+        }
+        return $results;
     }
 
     /**
      * @param $config
-     * @param $categories
      * @return Result
      */
-    protected function parseResult($config, $categories)
+    protected function parseResult($config): Result
     {
-        $parameters = [
-            'firstName' => $config['firstName'],
-            'lastName' => $config['lastName'],
-        ];
+        $result = new Result();
+        $bib = (string) $config['d'];
+        $result->setId($bib);
+        $result->setBib($bib);
 
-        /** @var RaceCategory $category */
-        $category = isset($categories[$config['raceID']]) ? $categories[$config['raceID']] : [];
-        if ($category instanceof RaceCategory) {
-            $parameters['category'] = $category->getName();
-            $parameters['gender'] = $this->parseGenderFromCategory($category);
-        }
+        $result->setTimeGross(Helper::durationToSeconds($config['t']));
+        $result->setTime(Helper::durationToSeconds($config['re']));
+        //$config['b'] // day time of finish;
 
-        $parameters['posCategory'] = $config['raceStanding'];
-        $parameters['posGender'] = $config['raceCategoryStanding'];
+        $athlete = $this->getAthlete($bib);
+        $result->populateFromAthlete($athlete);
 
-        $parameters['time'] = Helper::durationToSeconds($config['duration']);
-        $parameters['bib'] = $config['raceNumber'];
-        $parameters['id'] = $config['raceParticipantID'];
-
-        $parameters['status'] = $this->parseStatus($config);
-
-        return new Result($parameters);
+        return $result;
     }
 
-    /**
-     * @param RaceCategory $category
-     * @return string
-     */
-    protected function parseGenderFromCategory($category)
-    {
-        $listName = strtolower($category->getParameter('gender'));
-        if (strpos($listName, 'female') === 0) {
-            return 'female';
-        }
-        if (strpos($listName, 'male') === 0) {
-            return 'male';
-        }
-        return '';
-    }
 
     /**
      * @param $config
@@ -125,6 +151,70 @@ class ResultsPage extends AbstractParser
         return null;
     }
 
+    protected function getCategory($id): ?RaceCategory
+    {
+        $categories = $this->getCategories();
+        return $categories[$id] ?? null;
+    }
+
+    /**
+     * @return RaceCategory[]
+     */
+    protected function getCategories(): array
+    {
+        return $this->checkCategories();
+    }
+
+    protected function checkCategories()
+    {
+        if ($this->categories === null) {
+            $configArray = $this->getXmlObject();
+            $categoriesXml = $configArray->xpath('//Categories/G/C');
+            $categories = $this->parseCategories($categoriesXml);
+            $this->categories = $categories;
+        }
+        return $this->categories;
+    }
+
+    protected function parseCategories($categoriesXml): array
+    {
+        $categories = [];
+        $raceName = $this->getScraper()->getRace();
+        foreach ($categoriesXml as $categoryXml) {
+            if ($this->parseCategoryInRace($categoryXml, $raceName) === false) {
+                continue;
+            }
+            $category = $this->parseCategory($categoryXml);
+            $categories[$category->getId()] = $category;
+        }
+        return $categories;
+    }
+
+    protected function parseCategoryInRace($categoryXml, $raceName)
+    {
+        if (empty($raceName)) {
+            return true;
+        }
+        $categoryRace = (string)$categoryXml['crs'];
+        if (empty($categoryRace)) {
+            return true;
+        }
+        if ($categoryRace == $raceName) {
+            return true;
+        }
+        $categories = explode('¤', $categoryRace);
+        $categories = array_map('trim', $categories);
+        return in_array($raceName, $categories);
+    }
+
+    protected function parseCategory($categoryXml)
+    {
+        $category = new RaceCategory();
+        $category->setId((string)$categoryXml['abr']);
+        $category->setName((string)$categoryXml['nom']);
+        return $category;
+    }
+
     /** @noinspection PhpMissingParentCallCommonInspection
      * @inheritdoc
      */
@@ -140,4 +230,17 @@ class ResultsPage extends AbstractParser
     {
         return Result::class;
     }
+
+    protected function parseAthleteGender(string $param)
+    {
+        if ($param == 'M') {
+            return 'male';
+        }
+        if ($param == 'F') {
+            return 'female';
+        }
+        return null;
+    }
+
+
 }

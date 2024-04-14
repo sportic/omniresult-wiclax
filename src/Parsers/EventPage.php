@@ -3,11 +3,12 @@
 namespace Sportic\Omniresult\Wiclax\Parsers;
 
 use Nip\Utility\Arr;
+use SimpleXMLElement;
 use Sportic\Omniresult\Common\Content\ParentListContent;
 use Sportic\Omniresult\Common\Models\Event;
 use Sportic\Omniresult\Common\Models\Race;
 use Sportic\Omniresult\Common\Models\RaceCategory;
-use Sportic\Omniresult\Wiclax\Parsers\Traits\HasJsonConfigTrait;
+use Sportic\Omniresult\Wiclax\Parsers\Traits\HasXmlTrait;
 
 /**
  * Class EventPage
@@ -15,7 +16,7 @@ use Sportic\Omniresult\Wiclax\Parsers\Traits\HasJsonConfigTrait;
  */
 class EventPage extends AbstractParser
 {
-    use HasJsonConfigTrait;
+    use HasXmlTrait;
 
     protected $returnContent = [];
 
@@ -24,14 +25,14 @@ class EventPage extends AbstractParser
      */
     protected function generateContent()
     {
-        $configArray = $this->getConfigArray();
+        $xmlObject = $this->getXmlObject();
 
         $params = [
-            'record' => $this->parseEvent($configArray['sportEvent']),
-            'records' => $this->parseRaces($configArray['numberCategories'])
+            'record' => $this->parseEvent($xmlObject->attributes()),
+            'records' => $this->parseRaces($xmlObject->xpath('Parcours')),
         ];
 
-        $this->parseRacesCategories($params['records'], $configArray['races']);
+//        $this->parseRacesCategories($params['records'], $xmlObject['races']);
 
         return $params;
     }
@@ -40,28 +41,32 @@ class EventPage extends AbstractParser
      * @param $config
      * @return Event
      */
-    public function parseEvent($config)
+    public function parseEvent(SimpleXMLElement $config)
     {
         $event = new Event([
-            'id' => $config['id'],
-            'name' => $config['name'],
-            'city' => $config['location'],
+            'id' => $config['cle'] ?? uniqid(),
+            'name' => $config['nom'] ?? null,
         ]);
 
-        $event->setDateFromFormat(DATE_RFC3339_EXTENDED, $config['eventDate']);
+        $event->setDateFromFormat(DATE_RFC3339_EXTENDED, (string) $config['derSvg']);
+        $event->setParameter('organizer', (string) $config['organisateur']);
         return $event;
     }
 
     /**
-     * @param $config
+     * @param array $racesArray
      * @return Race[]
      */
-    public function parseRaces($config)
+    public function parseRaces($racesArray)
     {
-        $racesArray = $config;
-        $return = [];
+        if (count($racesArray) !== 1) {
+            return [];
+        }
+        $racesArray = $racesArray[0];
+        $racesArray = $racesArray->xpath('Pcs');
         foreach ($racesArray as $raceItem) {
-            $return[$raceItem['id']] = $this->parseRace($raceItem);
+            $name = (string) $raceItem['nom'];
+            $return[$name] = $this->parseRace($raceItem);
         }
         return $return;
     }
@@ -72,12 +77,10 @@ class EventPage extends AbstractParser
      */
     protected function parseRace($raceItem)
     {
+        $name = (string) $raceItem['nom'];
         $config = [
-            'id' => $raceItem['id'],
-            'name' => $raceItem['name'],
-            'externalId' => $raceItem['externalId'],
-            'rangeStart' => $raceItem['rangeStart'],
-            'rangeStop' => $raceItem['rangeStop'],
+            'id' => $name,
+            'name' =>$name,
         ];
 
         return new Race($config);
