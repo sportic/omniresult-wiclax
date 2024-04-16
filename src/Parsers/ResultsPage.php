@@ -83,6 +83,12 @@ class ResultsPage extends AbstractParser
         $athlete->setCountry((string)$athleteXml['na']);
 
         $category = $this->getCategory((string)$athleteXml['ca']);
+        $category = clone $category;
+        if ($this->getScraper()->isGenderCategoryMerge()) {
+            $gender = $athlete->getGender();
+            $categoryName = trim(ucfirst($gender) . ' ' . $category->getName());
+            $category->setName($categoryName);
+        }
         $athlete->setCategory($category);
         return $athlete;
     }
@@ -97,8 +103,25 @@ class ResultsPage extends AbstractParser
     protected function parseResults($resultsXml)
     {
         $results = [];
+        $athletes = $this->checkAtheletes();
+        $posGen = 1;
         foreach ($resultsXml as $resultXml) {
             $result = $this->parseResult($resultXml);
+            $bib = $result->getId();
+            $athlete = $athletes[$bib] ?? null;
+            if ($athlete === null) {
+                continue;
+            }
+            $result->setPosGen($posGen++);
+            $result->populateFromAthlete($athlete);
+            $results[$result->getId()] = $result;
+            unset($athletes[$bib]);
+        }
+        foreach ($athletes as $athlete) {
+            $result = new Result();
+            $result->setId($athlete->getId());
+            $result->populateFromAthlete($athlete);
+            $result->setStatus('DNS');
             $results[$result->getId()] = $result;
         }
         return $results;
@@ -111,44 +134,36 @@ class ResultsPage extends AbstractParser
     protected function parseResult($config): Result
     {
         $result = new Result();
-        $bib = (string) $config['d'];
+        $bib = (string)$config['d'];
         $result->setId($bib);
         $result->setBib($bib);
 
+        $time = $config['t'];
+        $result->setStatus($this->parseStatus($time));
         $result->setTimeGross(Helper::durationToSeconds($config['t']));
         $result->setTime(Helper::durationToSeconds($config['re']));
         //$config['b'] // day time of finish;
 
-        $athlete = $this->getAthlete($bib);
-        $result->populateFromAthlete($athlete);
 
         return $result;
     }
-
 
     /**
      * @param $config
      * @return string|null
      */
-    protected function parseStatus($config)
+    protected function parseStatus($time)
     {
-        if ($config['hasAbandoned'] == true) {
-            return 'DNF';
-        }
+        switch ($time) {
+            case 'DNS':
+                return 'DNS';
+            case 'DNF':
+                return 'DNF';
+            case 'Disqualified':
+                return 'DSQ';
 
-        if ($config['hasStarted'] === false) {
-            return 'DNS';
         }
-
-        if ($config['finishTime'] === null) {
-            return 'DNF';
-        }
-
-        if ($config['duration'] === 0) {
-            return 'DNF';
-        }
-
-        return null;
+        return 'active';
     }
 
     protected function getCategory($id): ?RaceCategory
