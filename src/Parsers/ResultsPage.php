@@ -35,7 +35,7 @@ class ResultsPage extends AbstractParser
         return [
             'pagination' => [
                 'current' => $this->getParameter('page', 1),
-                'all' => count($results)
+                'all' => 1
             ],
             'records' => $results
         ];
