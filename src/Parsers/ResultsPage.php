@@ -77,13 +77,27 @@ class ResultsPage extends AbstractParser
         $athlete = new Athlete();
         $bib = (string)$athleteXml['d'];
         $athlete->setId($bib);
-        $athlete->setFullNameLF((string)$athleteXml['n']);
+
+        $athleteName = (string)$athleteXml['n'];
+        $athleteName = str_replace([urldecode('%C2%A0')], ' ', $athleteName);
+        $athlete->setFullNameLF($athleteName);
+
         $athlete->setYob((string)$athleteXml['a']);
         $athlete->setGender($this->parseAthleteGender((string)$athleteXml['x']));
         $athlete->setCountry((string)$athleteXml['na']);
 
-        $category = $this->getCategory((string)$athleteXml['ca']);
-        $category = clone $category;
+        $categoryName = (string)$athleteXml['ca'];
+        $category = new RaceCategory();
+        $category->setId('general');
+        $category->setName('General');
+
+        if (empty($categoryName)) {
+        } else {
+            $foundCategory = $this->getCategory($categoryName);
+            if ($foundCategory) {
+                $category = clone $foundCategory;
+            }
+        }
         if ($this->getScraper()->isGenderCategoryMerge()) {
             $gender = $athlete->getGender();
             $categoryName = trim(ucfirst($gender) . ' ' . $category->getName());

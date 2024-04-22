@@ -38,8 +38,6 @@ abstract class AbstractScraper extends \Sportic\Omniresult\Common\Scrapers\Abstr
         ];
     }
 
-
-
     /**
      * @return string
      */

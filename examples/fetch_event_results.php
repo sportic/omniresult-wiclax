@@ -59,7 +59,10 @@ $results = $resultsData->getRecords();
             <?= $result->getBib(); ?>
         </td>
         <td>
-            <?= $result->getFullName(); ?>
+            <strong>
+                <?= $result->getFirstName(); ?>
+            </strong>
+            <?= $result->getLastName(); ?>
         </td>
         <td>
             <?= $result->getCategory()?->getName(); ?>
