@@ -18,7 +18,7 @@ class ResultsPageTest extends AbstractPageTest
         static::assertInstanceOf(Crawler::class, $crawler);
 
         static::assertSame(
-            'https://app.Wiclax.ro:8443/FinishLine.Application/races/results?page=0&pageSize=9000&searchCriteria=&raceID=1184',
+            'https://liniadesosire.ro/wp-content/glive-results/timisoara-sportguru-21k-2024/Timisoara%20Sportguru%2021K.clax',
             $crawler->getUri()
         );
     }
@@ -31,7 +31,7 @@ class ResultsPageTest extends AbstractPageTest
         $scrapper->execute();
         $content = $scrapper->getClient()->getResponse()->getContent();
 
-        static::assertStringContainsString('Muresan', $content);
+        static::assertStringContainsString('PLOSCAR', $content);
 //        file_put_contents(TEST_FIXTURE_PATH . '/Parsers/ResultsPage/default.json', $content);
     }
 
@@ -52,8 +52,8 @@ class ResultsPageTest extends AbstractPageTest
     protected function generateScraper($parameters = [])
     {
         $default = [
-            'eventId' => '77',
-            'raceId' => '184',
+            'event' => 'https://liniadesosire.ro/wp-content/glive-results/timisoara-sportguru-21k-2024/Timisoara%20Sportguru%2021K.clax',
+            'race' => 'Cros 10k',
             'page' => '2'
         ];
         $params = count($parameters) ? $parameters : $default;

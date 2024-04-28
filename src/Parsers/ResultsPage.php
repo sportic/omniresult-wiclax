@@ -87,17 +87,8 @@ class ResultsPage extends AbstractParser
         $athlete->setCountry((string)$athleteXml['na']);
 
         $categoryName = (string)$athleteXml['ca'];
-        $category = new RaceCategory();
-        $category->setId('general');
-        $category->setName('General');
+        $category = $this->parseAthleteCategory($categoryName);
 
-        if (empty($categoryName)) {
-        } else {
-            $foundCategory = $this->getCategory($categoryName);
-            if ($foundCategory) {
-                $category = clone $foundCategory;
-            }
-        }
         if ($this->getScraper()->isGenderCategoryMerge()) {
             $gender = $athlete->getGender();
             $categoryName = trim(ucfirst($gender) . ' ' . $category->getName());
@@ -105,6 +96,26 @@ class ResultsPage extends AbstractParser
         }
         $athlete->setCategory($category);
         return $athlete;
+    }
+
+    protected function parseAthleteCategory($categoryName)
+    {
+        $category = new RaceCategory();
+        $category->setId('general');
+        $category->setName('General');
+
+        if (empty($categoryName)) {
+            return $category;
+        }
+
+        $foundCategory = $this->getCategory($categoryName);
+        if ($foundCategory) {
+            $category = clone $foundCategory;
+            return $category;
+        }
+        $category->setName($categoryName);
+        $category->setId($categoryName);
+        return $category;
     }
 
     protected function getResults(): array

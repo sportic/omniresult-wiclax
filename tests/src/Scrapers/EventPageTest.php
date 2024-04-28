@@ -32,17 +32,9 @@ class EventPageTest extends AbstractPageTest
         $scrapper->execute();
         $content = $scrapper->getClient()->getResponse()->getContent();
 
-        static::assertStringContainsString('PC 2', $content);
-        static::assertStringContainsString('42Km Feminin Open', $content);
+        static::assertStringContainsString('14-19 ani', $content);
+        static::assertStringContainsString('KRSTIC', $content);
 //        file_put_contents(TEST_FIXTURE_PATH . '/Parsers/EventPage/default.json', $content);
-    }
-
-    public function testInitializeFromId()
-    {
-        $scraper = new EventPage();
-        $scraper->initialize(['eventId' => '77']);
-
-        self::assertEquals('77', $scraper->getEventId());
     }
 
 
@@ -63,7 +55,7 @@ class EventPageTest extends AbstractPageTest
     protected function generateScraper($parameters = [])
     {
         $default = [
-            'eventId' => '77',
+            'event' => 'https://liniadesosire.ro/wp-content/glive-results/timisoara-sportguru-21k-2024/Timisoara%20Sportguru%2021K.clax'
         ];
         $params = count($parameters) ? $parameters : $default;
         $params['raceClient'] = new \Sportic\Omniresult\Wiclax\WiclaxClient();
