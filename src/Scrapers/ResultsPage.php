@@ -44,7 +44,7 @@ class ResultsPage extends AbstractScraper
      */
     public function getGenderCategoryMerge(): bool
     {
-        return $this->getParameter('genderCategoryMerge', false);
+        return $this->getParameter('genderCategoryMerge', false) == true;
     }
 
     /**
