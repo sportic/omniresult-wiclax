@@ -21,6 +21,9 @@ class Helper extends \Sportic\Omniresult\Common\Helper
             [':', ':', '.'],
             $duration
         );
+        if (substr_count($duration, ':') < 2) {
+            return 0;
+        }
         return Time::fromString($duration)->getSeconds();
     }
 }

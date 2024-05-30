@@ -7,6 +7,8 @@ use Sportic\Omniresult\Common\Content\ListContent;
 use Sportic\Omniresult\Common\Models\Athlete;
 use Sportic\Omniresult\Common\Models\RaceCategory;
 use Sportic\Omniresult\Common\Models\Result;
+use Sportic\Omniresult\Common\Models\Split;
+use Sportic\Omniresult\Common\Models\SplitCollection;
 use Sportic\Omniresult\Wiclax\Helper;
 use Sportic\Omniresult\Wiclax\Parsers\Traits\HasXmlTrait;
 use Sportic\Omniresult\Wiclax\Scrapers\ResultsPage as Scraper;
@@ -24,6 +26,8 @@ class ResultsPage extends AbstractParser
     protected ?array $categories = null;
 
     protected ?array $athletes = null;
+
+    protected ?SplitCollection $timingPoints = null;
 
     /**
      * @return array
@@ -47,7 +51,7 @@ class ResultsPage extends AbstractParser
         return $athletes[$id] ?? null;
     }
 
-    protected function checkAtheletes()
+    protected function checkAtheletes(): ?array
     {
         if ($this->athletes === null) {
             $configArray = $this->getXmlObject();
@@ -163,13 +167,20 @@ class ResultsPage extends AbstractParser
         $result->setId($bib);
         $result->setBib($bib);
 
-        $time = $config['t'];
+        $time = (string) $config['t'];
         $result->setStatus($this->parseStatus($time));
-        $result->setTimeGross(Helper::durationToSeconds($config['t']));
+
+        $result->setTimeGross(Helper::durationToSeconds($time));
         $result->setTime(Helper::durationToSeconds($config['re']));
         //$config['b'] // day time of finish;
 
-
+        $timingPoints = $this->getTimingPoints();
+        foreach ($timingPoints as $split) {
+            $split = clone $split;
+            $splitTime = (string)$config['p' . $split->getId()];
+            $split->setParameters(['timeFromStart' => Helper::durationToSeconds($splitTime)]);
+            $result->getSplits()->add($split, $split->getId());
+        }
         return $result;
     }
 
@@ -183,10 +194,10 @@ class ResultsPage extends AbstractParser
             case 'DNS':
                 return 'DNS';
             case 'DNF':
+            case 'Withdrawal':
                 return 'DNF';
             case 'Disqualified':
                 return 'DSQ';
-
         }
         return 'active';
     }
@@ -282,5 +293,40 @@ class ResultsPage extends AbstractParser
         return null;
     }
 
+    protected function getTimingPoints()
+    {
+        if ($this->timingPoints === null) {
+            $this->timingPoints = $this->generateTimingPoints();
+        }
+        return $this->timingPoints;
+    }
+
+    protected function generateTimingPoints()
+    {
+        $timingPoints = new SplitCollection();
+
+        $configArray = $this->getXmlObject();
+        $resultsXml = $configArray->xpath('//Etapes/Etape/Pointages/Pointage');
+        foreach ($resultsXml as $resultXml) {
+            $timingPoint = $this->parseTimingPoint($resultXml);
+            if ($timingPoint === null) {
+                continue;
+            }
+            $timingPoints->add($timingPoint, $timingPoint->getId());
+        }
+        return $timingPoints;
+    }
+
+    protected function parseTimingPoint($resultXml)
+    {
+        $races = explode(',', (string)$resultXml['pcs']);
+        if (!in_array($this->getParameter('race'),$races)) {
+            return null;
+        }
+        $split = new Split();
+        $split->setId((string)$resultXml['id']);
+        $split->setName((string)$resultXml['nom']);
+        return $split;
+    }
 
 }
