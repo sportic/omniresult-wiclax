@@ -82,6 +82,9 @@ $splitCollection = $firstResult->getSplits();
             <?php foreach ($splitCollection as $split) { ?>
                 <td>
                 <span class="font-monospace bg-light border p-1" style="font-size: 80%">
+                    <?= Time::fromSeconds($split->getTime())->getDefaultString(); ?>
+                </span>
+                    <span class="font-monospace bg-light border p-1" style="font-size: 80%">
                     <?= Time::fromSeconds($split->getTimeFromStart())->getDefaultString(); ?>
                 </span>
                 </td>

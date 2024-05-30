@@ -4,7 +4,7 @@ namespace Sportic\Omniresult\Wiclax\Tests\Parsers;
 
 use Sportic\Omniresult\Common\Content\ListContent;
 use Sportic\Omniresult\Common\Models\RaceCategory;
-use Sportic\Omniresult\Wiclax\Parsers\ResultsPage as PageParser;
+use Sportic\Omniresult\Wiclax\Parsers\Resultspage as PageParser;
 use Sportic\Omniresult\Wiclax\Scrapers\ResultsPage as PageScraper;
 use Sportic\Omniresult\Wiclax\Tests\Fixtures\Results\ResultsFiles;
 

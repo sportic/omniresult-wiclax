@@ -7,9 +7,9 @@ use Sportic\Omniresult\Common\Content\ListContent;
 use Sportic\Omniresult\Common\Models\Athlete;
 use Sportic\Omniresult\Common\Models\RaceCategory;
 use Sportic\Omniresult\Common\Models\Result;
-use Sportic\Omniresult\Common\Models\Split;
-use Sportic\Omniresult\Common\Models\SplitCollection;
 use Sportic\Omniresult\Wiclax\Helper;
+use Sportic\Omniresult\Wiclax\Parsers\ResultsPage\SplitsSegmentsParser;
+use Sportic\Omniresult\Wiclax\Parsers\ResultsPage\SplitsTimingPointsParser;
 use Sportic\Omniresult\Wiclax\Parsers\Traits\HasXmlTrait;
 use Sportic\Omniresult\Wiclax\Scrapers\ResultsPage as Scraper;
 
@@ -27,15 +27,27 @@ class ResultsPage extends AbstractParser
 
     protected ?array $athletes = null;
 
-    protected ?SplitCollection $timingPoints = null;
+    protected ?SplitsTimingPointsParser $timingPointsParser = null;
+    protected ?SplitsSegmentsParser $segmentsParser = null;
+
+
+    public function __construct()
+    {
+        $this->segmentsParser = new SplitsSegmentsParser();
+        $this->timingPointsParser = new SplitsTimingPointsParser();
+    }
 
     /**
      * @return array
      */
     protected function generateContent(): array
     {
-        $results = $this->getResults();
+        $this->timingPointsParser->setXmlObject($this->getXmlObject());
+        $this->timingPointsParser->setParameter('race', $this->getParameter('race'));
+        $this->segmentsParser->setXmlObject($this->getXmlObject());
+        $this->segmentsParser->setParameter('race', $this->getParameter('race'));
 
+        $results = $this->getResults();
         return [
             'pagination' => [
                 'current' => $this->getParameter('page', 1),
@@ -174,13 +186,9 @@ class ResultsPage extends AbstractParser
         $result->setTime(Helper::durationToSeconds($config['re']));
         //$config['b'] // day time of finish;
 
-        $timingPoints = $this->getTimingPoints();
-        foreach ($timingPoints as $split) {
-            $split = clone $split;
-            $splitTime = (string)$config['p' . $split->getId()];
-            $split->setParameters(['timeFromStart' => Helper::durationToSeconds($splitTime)]);
-            $result->getSplits()->add($split, $split->getId());
-        }
+//        $this->timingPointsParser->populateResult($result, $config);
+        $this->segmentsParser->populateResult($result, $config);
+
         return $result;
     }
 
@@ -293,40 +301,6 @@ class ResultsPage extends AbstractParser
         return null;
     }
 
-    protected function getTimingPoints()
-    {
-        if ($this->timingPoints === null) {
-            $this->timingPoints = $this->generateTimingPoints();
-        }
-        return $this->timingPoints;
-    }
 
-    protected function generateTimingPoints()
-    {
-        $timingPoints = new SplitCollection();
-
-        $configArray = $this->getXmlObject();
-        $resultsXml = $configArray->xpath('//Etapes/Etape/Pointages/Pointage');
-        foreach ($resultsXml as $resultXml) {
-            $timingPoint = $this->parseTimingPoint($resultXml);
-            if ($timingPoint === null) {
-                continue;
-            }
-            $timingPoints->add($timingPoint, $timingPoint->getId());
-        }
-        return $timingPoints;
-    }
-
-    protected function parseTimingPoint($resultXml)
-    {
-        $races = explode(',', (string)$resultXml['pcs']);
-        if (!in_array($this->getParameter('race'),$races)) {
-            return null;
-        }
-        $split = new Split();
-        $split->setId((string)$resultXml['id']);
-        $split->setName((string)$resultXml['nom']);
-        return $split;
-    }
 
 }
