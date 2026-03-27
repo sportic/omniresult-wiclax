@@ -14,6 +14,11 @@ class ResultsFiles
         return static::getPath('multiple-races-categories.clax');
     }
 
+    public static function exporterApi(): string
+    {
+        return static::getPath('wiclax_api.json');
+    }
+
     private static function getPath(string $string): string
     {
         return __DIR__ . '/files/' . $string;

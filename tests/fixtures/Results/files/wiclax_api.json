@@ -1,0 +1,236 @@
+{
+  "dataType": "ranking",
+  "eventName": "Timisoara 21K by Sportguru 2026",
+  "rows": [
+    {
+      "bib": 3110,
+      "realbib": "3110",
+      "rank": 1,
+      "firstname": "DANIEL",
+      "lastname": "SCROB",
+      "race": "2.5k",
+      "category": "Masculin | Male",
+      "sex": "M",
+      "nationality": "Romania",
+      "year": "1982",
+      "team": "Clubul Sportiv Comunitar Sibiu",
+      "time": "00:07:54",
+      "chiptime": "00:07:54",
+      "gap": "",
+      "rankbycat": 1,
+      "rankbysex": 0,
+      "splits": [],
+      "segments": []
+    },
+    {
+      "bib": 3023,
+      "realbib": "3023",
+      "rank": 2,
+      "firstname": "Ioan",
+      "lastname": "Cazacu",
+      "race": "2.5k",
+      "category": "Masculin | Male",
+      "sex": "M",
+      "nationality": "Romania",
+      "year": "1972",
+      "team": "CSM.VULCAN",
+      "time": "00:08:49",
+      "chiptime": "00:08:49",
+      "gap": "00:00:55",
+      "rankbycat": 2,
+      "rankbysex": 0,
+      "splits": [],
+      "segments": []
+    },
+    {
+      "bib": 3011,
+      "realbib": "3011",
+      "rank": 3,
+      "firstname": "Edouard",
+      "lastname": "Plantet Vuc",
+      "race": "2.5k",
+      "category": "Masculin | Male",
+      "sex": "M",
+      "nationality": "Germany",
+      "year": "2011",
+      "team": "TSV Hohenbrunn Riemerling",
+      "time": "00:08:50",
+      "chiptime": "00:08:50",
+      "gap": "00:00:56",
+      "rankbycat": 3,
+      "rankbysex": 0,
+      "splits": [],
+      "segments": []
+    },
+    {
+      "bib": 3034,
+      "realbib": "3034",
+      "rank": 4,
+      "firstname": "George",
+      "lastname": "Serban",
+      "race": "2.5k",
+      "category": "Masculin | Male",
+      "sex": "M",
+      "nationality": "Romania",
+      "year": "1989",
+      "team": "Mega image",
+      "time": "00:08:53",
+      "chiptime": "00:08:53",
+      "gap": "00:00:59",
+      "rankbycat": 4,
+      "rankbysex": 0,
+      "splits": [],
+      "segments": []
+    },
+    {
+      "bib": 3003,
+      "realbib": "3003",
+      "rank": 5,
+      "firstname": "Ellya",
+      "lastname": "Fota",
+      "race": "2.5k",
+      "category": "Feminin | Female",
+      "sex": "F",
+      "nationality": "Romania",
+      "year": "2013",
+      "team": "CSM Cluj",
+      "time": "00:09:03",
+      "chiptime": "00:09:03",
+      "gap": "00:01:09",
+      "rankbycat": 1,
+      "rankbysex": 0,
+      "splits": [],
+      "segments": []
+    },
+    {
+      "bib": 1258,
+      "realbib": "1258",
+      "rank": 640,
+      "firstname": "Menon",
+      "lastname": "Ajit",
+      "race": "10K powered by HUAWEI Watch GT Runner 2",
+      "category": "Masculin | Male 30 - 39",
+      "sex": "M",
+      "nationality": "India",
+      "year": "1992",
+      "team": "Decathlon",
+      "time": "01:15:42",
+      "chiptime": "01:15:04",
+      "gap": "01:07:48",
+      "rankbycat": 108,
+      "rankbysex": 0,
+      "splits": [],
+      "segments": []
+    },
+    {
+      "bib": 1271,
+      "realbib": "1271",
+      "rank": 641,
+      "firstname": "Cristina",
+      "lastname": "Bercea",
+      "race": "10K powered by HUAWEI Watch GT Runner 2",
+      "category": "Feminin | Female 30 - 39",
+      "sex": "F",
+      "nationality": "Romania",
+      "year": "1996",
+      "team": "Nu",
+      "time": "01:15:53",
+      "chiptime": "01:14:49",
+      "gap": "01:07:59",
+      "rankbycat": 78,
+      "rankbysex": 0,
+      "splits": [],
+      "segments": []
+    },
+    {
+      "bib": 380,
+      "realbib": "380",
+      "rank": 737,
+      "firstname": "Mihai-Alin",
+      "lastname": "Roman",
+      "race": "21K by SportGuru",
+      "category": "Masculin | Male 30 - 39",
+      "sex": "M",
+      "nationality": "Romania",
+      "year": "1990",
+      "team": "",
+      "time": "01:35:01",
+      "chiptime": "01:34:53",
+      "gap": "01:27:07",
+      "rankbycat": 139,
+      "rankbysex": 0,
+      "splits": [
+        {
+          "name": "Lap 1",
+          "time": "00:42:25"
+        }
+      ],
+      "segments": [
+        {
+          "name": "10K",
+          "time": "00:42:25"
+        }
+      ]
+    },
+    {
+      "bib": 555,
+      "realbib": "555",
+      "rank": 790,
+      "firstname": "Camelia",
+      "lastname": "Reghini",
+      "race": "21K by SportGuru",
+      "category": "Feminin | Female 50 - 59",
+      "sex": "F",
+      "nationality": "Romania",
+      "year": "1973",
+      "team": "Runners Club",
+      "time": "01:39:54",
+      "chiptime": "01:39:34",
+      "gap": "01:32:00",
+      "rankbycat": 29,
+      "rankbysex": 0,
+      "splits": [
+        {
+          "name": "Lap 1",
+          "time": "00:47:31"
+        }
+      ],
+      "segments": [
+        {
+          "name": "10K",
+          "time": "00:47:31"
+        }
+      ]
+    },
+    {
+      "bib": 613,
+      "realbib": "613",
+      "rank": 798,
+      "firstname": "Balint",
+      "lastname": "Fridrih",
+      "race": "21K by SportGuru",
+      "category": "Masculin | Male 40 - 49",
+      "sex": "M",
+      "nationality": "Serbia",
+      "year": "1980",
+      "team": "ARK Somaraton",
+      "time": "01:40:46",
+      "chiptime": "01:40:24",
+      "gap": "01:32:52",
+      "rankbycat": 136,
+      "rankbysex": 0,
+      "splits": [
+        {
+          "name": "Lap 1",
+          "time": "00:47:52"
+        }
+      ],
+      "segments": [
+        {
+          "name": "10K",
+          "time": "00:47:52"
+        }
+      ]
+    }
+  ]
+}
