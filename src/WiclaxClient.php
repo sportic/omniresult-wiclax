@@ -6,6 +6,7 @@ use Sportic\Omniresult\Common\Parsers\AbstractParser;
 use Sportic\Omniresult\Common\RequestDetector\HasDetectorTrait;
 use Sportic\Omniresult\Common\TimingClient;
 use Sportic\Omniresult\Wiclax\Scrapers\EventPage;
+use Sportic\Omniresult\Wiclax\Scrapers\ExporterApi;
 use Sportic\Omniresult\Wiclax\Scrapers\ResultPage;
 use Sportic\Omniresult\Wiclax\Scrapers\ResultsPage;
 
@@ -43,5 +44,14 @@ class WiclaxClient extends TimingClient
     public function result($parameters)
     {
         return $this->executeScrapper(ResultPage::class, $parameters);
+    }
+
+    /**
+     * @param $parameters
+     * @return AbstractParser|Parsers\ExporterApi
+     */
+    public function exporterApi($parameters)
+    {
+        return $this->executeScrapper(ExporterApi::class, $parameters);
     }
 }
