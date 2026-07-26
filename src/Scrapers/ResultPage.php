@@ -40,4 +40,8 @@ class ResultPage extends AbstractScraper
         ];
     }
 
+    public function getCrawlerUri(): string
+    {
+        return '';
+    }
 }
