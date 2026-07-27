@@ -101,6 +101,8 @@ if ($event !== '' || $race !== '') {
         .per-page-form { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; }
         .checkbox-row { margin-top: 12px; }
         .time-cell small { color: #666; font-size: 0.8rem; display: block; font-weight: bold; }
+        .gender-label { font-weight: bold; }
+        .pagination-bottom { margin-top: 12px; }
     </style>
 </head>
 <body>
@@ -233,7 +235,7 @@ if ($event !== '' || $race !== '') {
                     <td><?= htmlspecialchars((string) $result->getBib(), ENT_QUOTES, 'UTF-8') ?></td>
                     <td><?= htmlspecialchars((string) $result->getFullName(), ENT_QUOTES, 'UTF-8') ?></td>
                     <td>
-                        <small style="font-weight: bold;">
+                        <small class="gender-label">
                             Gender: <?= htmlspecialchars((string) $result->getGender(), ENT_QUOTES, 'UTF-8') ?>
                         </small>
                         <br>
@@ -279,7 +281,7 @@ if ($event !== '' || $race !== '') {
             </tbody>
         </table>
 
-        <div class="pagination" style="margin-top:12px;">
+        <div class="pagination pagination-bottom">
             <?php if ($page > 1): ?>
                 <a class="btn" href="<?= racePaginationUrl(1, $event, $race, $perPage, $genderCategoryMerge) ?>">« First</a>
                 <a class="btn" href="<?= racePaginationUrl($page - 1, $event, $race, $perPage, $genderCategoryMerge) ?>">‹ Prev</a>

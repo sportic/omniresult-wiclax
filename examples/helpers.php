@@ -8,6 +8,9 @@ function exampleIsValidEventUrl(string $url): bool
         && preg_match('#^https?://.+\.clax(?:\?.*)?$#i', $url) === 1;
 }
 
+/**
+ * Formats a numeric duration value into the default bytic/utility time string output.
+ */
 function exampleFormatDuration(int|float|string|null $seconds): string
 {
     if (!is_numeric($seconds) || (int) $seconds <= 0) {
