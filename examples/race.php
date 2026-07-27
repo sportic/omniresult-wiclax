@@ -139,12 +139,12 @@ if ($event !== '' || $race !== '') {
     <label for="perPage"><strong>Results per page:</strong></label>
     <select id="perPage" name="perPage">
         <?php foreach ([10, 25, 50, 100] as $opt): ?>
-            <option value="<?= $opt ?>" <?= $opt === $perPage ? 'selected' : '' ?>><?= $opt ?></option>
+            <option value="<?= $opt ?>" <?= exampleAttribute($opt === $perPage, 'selected') ?>><?= $opt ?></option>
         <?php endforeach; ?>
     </select>
     <div class="checkbox-row">
         <label>
-            <input type="checkbox" name="genderCategoryMerge" value="1" <?= $genderCategoryMerge === 1 ? 'checked' : '' ?>>
+            <input type="checkbox" name="genderCategoryMerge" value="1" <?= exampleAttribute($genderCategoryMerge === 1, 'checked') ?>>
             Merge gender into category labels
         </label>
     </div>
@@ -199,7 +199,7 @@ if ($event !== '' || $race !== '') {
             <label for="perPageSwitch">Per page:</label>
             <select id="perPageSwitch" name="perPage" onchange="this.form.submit()">
                 <?php foreach ([10, 25, 50, 100] as $opt): ?>
-                    <option value="<?= $opt ?>" <?= $opt === $perPage ? 'selected' : '' ?>><?= $opt ?></option>
+                    <option value="<?= $opt ?>" <?= exampleAttribute($opt === $perPage, 'selected') ?>><?= $opt ?></option>
                 <?php endforeach; ?>
             </select>
         </form>
