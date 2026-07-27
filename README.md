@@ -7,4 +7,4 @@ Example UI:
 php -S localhost:8080 -t examples/
 ```
 
-Open `/examples/index.php` in the browser and start from a Wiclax `.clax` event file URL.
+Open `http://localhost:8080/index.php` in the browser and start from a Wiclax `.clax` event file URL.

@@ -107,7 +107,7 @@ if ($event !== '' || $race !== '') {
 <body>
 <h1>Wiclax – Race Results</h1>
 
-<a class="back" href="<?= $event !== '' ? 'event.php?' . http_build_query(['event' => $event]) : 'index.php' ?>">
+<a class="back" href="<?= $event !== '' ? 'event.php?' . exampleBuildQuery(['event' => $event]) : 'index.php' ?>">
     ← Back
 </a>
 
