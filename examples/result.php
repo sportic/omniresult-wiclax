@@ -7,19 +7,10 @@
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/helpers.php';
 
-use Nip\Utility\Time;
 use Sportic\Omniresult\Common\Models\Split;
 use Sportic\Omniresult\Wiclax\WiclaxClient;
-
-function formatResultDuration($seconds): string
-{
-    if (!is_numeric($seconds) || (int) $seconds <= 0) {
-        return '—';
-    }
-
-    return Time::fromSeconds((int) $seconds)->getDefaultString();
-}
 
 $event = trim($_GET['event'] ?? '');
 $race = trim($_GET['race'] ?? '');
@@ -32,12 +23,9 @@ $result = null;
 $exampleUrl = 'https://liniadesosire.ro/wp-content/glive-results/transfier-2023/Transfier%202023.clax';
 
 if ($event !== '' || $race !== '' || $uid !== '') {
-    $isValidUrl = filter_var($event, FILTER_VALIDATE_URL) !== false
-        && preg_match('#^https?://.+\.clax(?:\?.*)?$#i', $event);
-
     if ($event === '' || $race === '' || $uid === '') {
         $error = 'Event URL, race name and athlete uid are required.';
-    } elseif ($isValidUrl !== 1) {
+    } elseif (!exampleIsValidEventUrl($event)) {
         $error = 'Invalid event URL. Please enter a valid Wiclax event file URL.';
     } else {
         try {
@@ -148,8 +136,8 @@ if ($event !== '' || $race !== '' || $uid !== '') {
         <tr><th>Position (Cat)</th><td><?= htmlspecialchars((string) $result->getPosCategory(), ENT_QUOTES, 'UTF-8') ?></td></tr>
         <tr><th>Position (Gender)</th><td><?= htmlspecialchars((string) $result->getPosGender(), ENT_QUOTES, 'UTF-8') ?></td></tr>
         <tr><th>Status</th><td><?= htmlspecialchars((string) $result->getStatus(), ENT_QUOTES, 'UTF-8') ?></td></tr>
-        <tr><th>Net Time</th><td><?= htmlspecialchars(formatResultDuration($result->getTime()), ENT_QUOTES, 'UTF-8') ?></td></tr>
-        <tr><th>Gun Time</th><td><?= htmlspecialchars(formatResultDuration($result->getTimeGross()), ENT_QUOTES, 'UTF-8') ?></td></tr>
+        <tr><th>Net Time</th><td><?= htmlspecialchars(exampleFormatDuration($result->getTime()), ENT_QUOTES, 'UTF-8') ?></td></tr>
+        <tr><th>Gun Time</th><td><?= htmlspecialchars(exampleFormatDuration($result->getTimeGross()), ENT_QUOTES, 'UTF-8') ?></td></tr>
     </table>
 
     <?php if (count($result->getSplits()) > 0): ?>
@@ -167,8 +155,8 @@ if ($event !== '' || $race !== '' || $uid !== '') {
                 <?php /** @var Split $split */ ?>
                 <tr>
                     <td><?= htmlspecialchars((string) $split->getName(), ENT_QUOTES, 'UTF-8') ?></td>
-                    <td><?= htmlspecialchars(formatResultDuration($split->getTime()), ENT_QUOTES, 'UTF-8') ?></td>
-                    <td><?= htmlspecialchars(formatResultDuration($split->getTimeFromStart()), ENT_QUOTES, 'UTF-8') ?></td>
+                    <td><?= htmlspecialchars(exampleFormatDuration($split->getTime()), ENT_QUOTES, 'UTF-8') ?></td>
+                    <td><?= htmlspecialchars(exampleFormatDuration($split->getTimeFromStart()), ENT_QUOTES, 'UTF-8') ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

@@ -1,4 +1,8 @@
 <?php
+$exampleUrl = 'https://liniadesosire.ro/wp-content/glive-results/transfier-2023/Transfier%202023.clax';
+
+require_once __DIR__ . '/helpers.php';
+
 /**
  * examples/index.php
  *
@@ -8,15 +12,11 @@
  */
 
 $error = null;
-$exampleUrl = 'https://liniadesosire.ro/wp-content/glive-results/transfier-2023/Transfier%202023.clax';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $url = trim($_POST['url'] ?? '');
 
-    $isValidUrl = filter_var($url, FILTER_VALIDATE_URL) !== false
-        && preg_match('#^https?://.+\.clax(?:\?.*)?$#i', $url);
-
-    if ($isValidUrl !== 1) {
+    if (!exampleIsValidEventUrl($url)) {
         $error = 'Invalid URL. Please enter a valid Wiclax event file URL '
             . '(e.g. ' . $exampleUrl . ')';
     } else {

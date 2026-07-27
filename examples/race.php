@@ -7,20 +7,11 @@
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/helpers.php';
 
-use Nip\Utility\Time;
 use Sportic\Omniresult\Common\Models\Result;
 use Sportic\Omniresult\Common\Models\Split;
 use Sportic\Omniresult\Wiclax\WiclaxClient;
-
-function formatDurationValue($seconds): string
-{
-    if (!is_numeric($seconds) || (int) $seconds <= 0) {
-        return '—';
-    }
-
-    return Time::fromSeconds((int) $seconds)->getDefaultString();
-}
 
 function racePaginationUrl(int $targetPage, string $event, string $race, int $perPage, int $genderCategoryMerge): string
 {
@@ -50,12 +41,9 @@ $splitHeaders = [];
 $exampleUrl = 'https://liniadesosire.ro/wp-content/glive-results/transfier-2023/Transfier%202023.clax';
 
 if ($event !== '' || $race !== '') {
-    $isValidUrl = filter_var($event, FILTER_VALIDATE_URL) !== false
-        && preg_match('#^https?://.+\.clax(?:\?.*)?$#i', $event);
-
     if ($event === '' || $race === '') {
         $error = 'Event URL and race name are required.';
-    } elseif ($isValidUrl !== 1) {
+    } elseif (!exampleIsValidEventUrl($event)) {
         $error = 'Invalid event URL. Please enter a valid Wiclax event file URL.';
     } else {
         try {
@@ -266,15 +254,15 @@ if ($event !== '' || $race !== '') {
                         <?php $split = $resultSplits[$splitId] ?? null; ?>
                         <td class="time-cell">
                             <?php if ($split instanceof Split): ?>
-                                <?= htmlspecialchars(formatDurationValue($split->getTime()), ENT_QUOTES, 'UTF-8') ?>
-                                <small><?= htmlspecialchars(formatDurationValue($split->getTimeFromStart()), ENT_QUOTES, 'UTF-8') ?></small>
+                                <?= htmlspecialchars(exampleFormatDuration($split->getTime()), ENT_QUOTES, 'UTF-8') ?>
+                                <small><?= htmlspecialchars(exampleFormatDuration($split->getTimeFromStart()), ENT_QUOTES, 'UTF-8') ?></small>
                             <?php else: ?>
                                 —
                             <?php endif; ?>
                         </td>
                     <?php endforeach; ?>
-                    <td><?= htmlspecialchars(formatDurationValue($result->getTime()), ENT_QUOTES, 'UTF-8') ?></td>
-                    <td><?= htmlspecialchars(formatDurationValue($result->getTimeGross()), ENT_QUOTES, 'UTF-8') ?></td>
+                    <td><?= htmlspecialchars(exampleFormatDuration($result->getTime()), ENT_QUOTES, 'UTF-8') ?></td>
+                    <td><?= htmlspecialchars(exampleFormatDuration($result->getTimeGross()), ENT_QUOTES, 'UTF-8') ?></td>
                     <td>
                         <?php if ($result->getId()): ?>
                             <a class="btn"

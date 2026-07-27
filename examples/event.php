@@ -7,6 +7,7 @@
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/helpers.php';
 
 use Sportic\Omniresult\Wiclax\WiclaxClient;
 
@@ -17,10 +18,7 @@ $races = null;
 $exampleUrl = 'https://liniadesosire.ro/wp-content/glive-results/transfier-2023/Transfier%202023.clax';
 
 if ($event !== '') {
-    $isValidUrl = filter_var($event, FILTER_VALIDATE_URL) !== false
-        && preg_match('#^https?://.+\.clax(?:\?.*)?$#i', $event);
-
-    if ($isValidUrl !== 1) {
+    if (!exampleIsValidEventUrl($event)) {
         $error = 'Invalid event URL. Please enter a valid Wiclax event file URL.';
         $event = '';
     } else {
