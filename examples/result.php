@@ -72,13 +72,13 @@ if ($event !== '' || $race !== '' || $uid !== '') {
 <body>
 <h1>Wiclax – Athlete Result</h1>
 
-<a class="back" href="<?= $event !== '' && $race !== '' ? 'race.php?' . http_build_query(array_filter([
+<a class="back" href="<?= $event !== '' && $race !== '' ? 'race.php?' . exampleBuildQuery([
     'event' => $event,
     'race' => $race,
     'page' => $page,
     'perPage' => $perPage,
     'genderCategoryMerge' => $genderCategoryMerge === 1 ? 1 : null,
-], static fn($value) => $value !== null)) : 'index.php' ?>">
+]) : 'index.php' ?>">
     ← Back
 </a>
 

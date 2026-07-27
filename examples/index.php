@@ -1,6 +1,4 @@
 <?php
-$exampleUrl = 'https://liniadesosire.ro/wp-content/glive-results/transfier-2023/Transfier%202023.clax';
-
 require_once __DIR__ . '/helpers.php';
 
 /**
@@ -12,6 +10,7 @@ require_once __DIR__ . '/helpers.php';
  */
 
 $error = null;
+$exampleUrl = 'https://liniadesosire.ro/wp-content/glive-results/transfier-2023/Transfier%202023.clax';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $url = trim($_POST['url'] ?? '');

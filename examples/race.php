@@ -26,7 +26,7 @@ function racePaginationUrl(int $targetPage, string $event, string $race, int $pe
         $parameters['genderCategoryMerge'] = 1;
     }
 
-    return '?' . http_build_query($parameters);
+    return '?' . exampleBuildQuery($parameters);
 }
 
 $event = trim($_GET['event'] ?? '');
@@ -264,14 +264,14 @@ if ($event !== '' || $race !== '') {
                     <td>
                         <?php if ($result->getId()): ?>
                             <a class="btn"
-                               href="result.php?<?= http_build_query(array_filter([
+                               href="result.php?<?= exampleBuildQuery([
                                    'event' => $event,
                                    'race' => $race,
                                    'uid' => $result->getId(),
                                    'page' => $page,
                                    'perPage' => $perPage,
                                    'genderCategoryMerge' => $genderCategoryMerge === 1 ? 1 : null,
-                               ], static fn($value) => $value !== null)) ?>">
+                               ]) ?>">
                                 Detail
                             </a>
                         <?php endif; ?>

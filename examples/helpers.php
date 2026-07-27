@@ -16,3 +16,10 @@ function exampleFormatDuration(int|float|string|null $seconds): string
 
     return Time::fromSeconds((int) $seconds)->getDefaultString();
 }
+
+function exampleBuildQuery(array $parameters): string
+{
+    return http_build_query(
+        array_filter($parameters, static fn($value) => $value !== null)
+    );
+}
