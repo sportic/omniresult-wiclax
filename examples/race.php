@@ -250,7 +250,7 @@ if ($event !== '' || $race !== '') {
                     <?php foreach ($splitHeaders as $splitId => $splitName): ?>
                         <?php $split = $resultSplits[$splitId] ?? null; ?>
                         <td class="time-cell">
-                            <?php if ($split instanceof Split): ?>
+                            <?php if ($split !== null): ?>
                                 <?= htmlspecialchars(exampleFormatDuration($split->getTime()), ENT_QUOTES, 'UTF-8') ?>
                                 <small><?= htmlspecialchars(exampleFormatDuration($split->getTimeFromStart()), ENT_QUOTES, 'UTF-8') ?></small>
                             <?php else: ?>
