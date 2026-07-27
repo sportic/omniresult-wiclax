@@ -152,7 +152,6 @@ if ($event !== '' || $race !== '' || $uid !== '') {
             </thead>
             <tbody>
             <?php foreach ($result->getSplits() as $split): ?>
-                <?php /** @var Split $split */ ?>
                 <tr>
                     <td><?= htmlspecialchars((string) $split->getName(), ENT_QUOTES, 'UTF-8') ?></td>
                     <td><?= htmlspecialchars(exampleFormatDuration($split->getTime()), ENT_QUOTES, 'UTF-8') ?></td>

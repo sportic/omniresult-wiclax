@@ -63,9 +63,7 @@ if ($event !== '' || $race !== '') {
             $paginatedResults = array_slice($results, $offset, $perPage);
 
             foreach ($paginatedResults as $resultItem) {
-                /** @var Result $resultItem */
                 foreach ($resultItem->getSplits() as $split) {
-                    /** @var Split $split */
                     $splitHeaders[$split->getId()] = $split->getName();
                 }
             }
