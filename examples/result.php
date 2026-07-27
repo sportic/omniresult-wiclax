@@ -9,7 +9,6 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/helpers.php';
 
-use Sportic\Omniresult\Common\Models\Split;
 use Sportic\Omniresult\Wiclax\WiclaxClient;
 
 $event = trim($_GET['event'] ?? '');

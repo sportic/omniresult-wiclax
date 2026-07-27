@@ -10,7 +10,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/helpers.php';
 
 use Sportic\Omniresult\Common\Models\Result;
-use Sportic\Omniresult\Common\Models\Split;
 use Sportic\Omniresult\Wiclax\WiclaxClient;
 
 function racePaginationUrl(int $targetPage, string $event, string $race, int $perPage, int $genderCategoryMerge): string
