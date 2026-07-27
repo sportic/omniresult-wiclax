@@ -14,6 +14,7 @@ function exampleFormatDuration(int|float|string|null $seconds): string
         return '—';
     }
 
+    /** @var Time $time */
     return Time::fromSeconds((int) $seconds)->getDefaultString();
 }
 
