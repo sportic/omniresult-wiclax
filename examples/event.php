@@ -109,7 +109,7 @@ if ($event !== '') {
                     <td><?= htmlspecialchars((string) $race->getName(), ENT_QUOTES, 'UTF-8') ?></td>
                     <td>
                         <a class="btn"
-                           href="race.php?<?= http_build_query(['event' => $event, 'race' => $race->getName()]) ?>">
+                           href="race.php?<?= exampleBuildQuery(['event' => $event, 'race' => $race->getName()]) ?>">
                             View results
                         </a>
                     </td>
