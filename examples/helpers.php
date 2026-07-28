@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
 use Nip\Utility\Time;
 
 function exampleIsValidEventUrl(string $url): bool

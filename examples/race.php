@@ -228,12 +228,22 @@ if ($event !== '' || $race !== '') {
             </thead>
             <tbody>
             <?php foreach ($paginatedResults as $result): ?>
+                <?php
+            /**
+             * @var \Sportic\Omniresult\Common\Models\Result $result
+             */
+            ?>
                 <tr>
                     <td><?= htmlspecialchars((string) $result->getPosGen(), ENT_QUOTES, 'UTF-8') ?></td>
                     <td><?= htmlspecialchars((string) $result->getPosCategory(), ENT_QUOTES, 'UTF-8') ?></td>
                     <td><?= htmlspecialchars((string) $result->getPosGender(), ENT_QUOTES, 'UTF-8') ?></td>
                     <td><?= htmlspecialchars((string) $result->getBib(), ENT_QUOTES, 'UTF-8') ?></td>
-                    <td><?= htmlspecialchars((string) $result->getFullName(), ENT_QUOTES, 'UTF-8') ?></td>
+                    <td>
+                        <small style="font-weight: bold;">
+                            <?= htmlspecialchars((string) $result->getCountry(), ENT_QUOTES, 'UTF-8') ?>
+                        </small>
+                        <?= htmlspecialchars((string) $result->getFullName(), ENT_QUOTES, 'UTF-8') ?>
+                    </td>
                     <td>
                         <small class="gender-label">
                             Gender: <?= htmlspecialchars((string) $result->getGender(), ENT_QUOTES, 'UTF-8') ?>

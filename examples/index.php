@@ -1,4 +1,7 @@
 <?php
+
+use Sportic\Omniresult\Wiclax\RequestDetectors\SourceDetector;
+
 require_once __DIR__ . '/helpers.php';
 
 /**
@@ -15,10 +18,13 @@ $exampleUrl = 'https://liniadesosire.ro/wp-content/glive-results/transfier-2023/
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $url = trim($_POST['url'] ?? '');
 
-    if (!exampleIsValidEventUrl($url)) {
+    $crawler = SourceDetector::generateCrawler($url);
+    $result = SourceDetector::detect($crawler);
+    if (!$result->isValid()) {
         $error = 'Invalid URL. Please enter a valid Wiclax event file URL '
             . '(e.g. ' . $exampleUrl . ')';
     } else {
+        $url = $result->getParams()['src'];
         header('Location: event.php?event=' . urlencode($url));
         exit;
     }

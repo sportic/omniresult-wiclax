@@ -73,8 +73,10 @@ abstract class SplitsAbstractParser
 
     protected function generateSplitObject($resultXml)
     {
-        $races = explode(',', (string)$resultXml['pcs']);
-        if (!in_array($this->getParameter('race'), $races)) {
+        $racesString = (string)$resultXml['pcs'];
+        $races = explode(',', $racesString);
+        $races = array_filter($races);
+        if (count($races) && !in_array($this->getParameter('race'), $races)) {
             return null;
         }
         $split = new Split();

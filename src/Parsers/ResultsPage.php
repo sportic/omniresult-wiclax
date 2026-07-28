@@ -182,11 +182,17 @@ class ResultsPage extends AbstractParser
         $time = (string) $config['t'];
         $result->setStatus($this->parseStatus($time));
 
-        $result->setTimeGross(Helper::durationToSeconds($time));
-        $result->setTime(Helper::durationToSeconds($config['re']));
+        $timeGross = Helper::durationToSeconds($time);
+        $time = Helper::durationToSeconds($config['re']);
+        if (!empty($timeGross) && empty($time)) {
+            $time = $timeGross;
+            $timeGross = null;
+        }
+        $result->setTime($time);
+        $result->setTimeGross($timeGross);
         //$config['b'] // day time of finish;
 
-//        $this->timingPointsParser->populateResult($result, $config);
+        $this->timingPointsParser->populateResult($result, $config);
         $this->segmentsParser->populateResult($result, $config);
 
         return $result;
